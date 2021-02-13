@@ -1,0 +1,49 @@
+//variables
+
+$colorW: rgba(255, 255, 255, 0.9);
+
+//mixins
+
+
+
+
+body{
+    padding: 0px;
+    margin: 0px;
+    width: 100vw;
+    height: 100vh;
+}
+.wrapper{
+    background: #303030;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+html{
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+}
+
+input, textarea, a, button{
+    outline: none;
+    border: none;
+    background-color: transparent;
+    font-family: 'Roboto';
+}
+
+button{
+    cursor: pointer;
+}
+
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+a{
+    text-decoration: none;
+}

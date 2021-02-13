@@ -1,26 +1,39 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+	<div id="app" class="wrapper">
+		<router-view @setUserData="setUserData" :user="user" />
+		<Start :open="start" />
+	</div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+	
+	import Start from './components/Start/Start'
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+	export default {
+		name: 'App',
+		components: { Start },
+		data() {
+			return {
+				start : true,
+				user: null,
+				token : null
+			}
+		},
+		mounted() {
+			setTimeout(() => {
+				this.start = false
+			}, 1000)
+		},
+		watch: {
+			user(){
+				console.log(this.user)
+			}
+		},
+		methods: {
+			setUserData({ user, token }) {
+				this.user = user
+				this.token = token
+			}
+		}
+	}
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
