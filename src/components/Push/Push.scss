@@ -1,0 +1,27 @@
+.push{
+    position: absolute;
+    top: 20px;
+    left: calc(50% - 172px);
+    padding: 11px 58px;
+    background: rgba(66, 66, 66, 0.8);
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.05);
+    border-radius: 5px;
+    width: 345px;
+    color: $colorW;
+    text-align: center;
+    font-size: 0.6rem;
+    line-height: 0.7rem;
+    margin-bottom: 18px;
+    transform: translateY(-10px);
+    opacity: 0;
+    visibility: hidden;
+    transition-duration: .2s;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    &-active{
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0px);
+    }
+}

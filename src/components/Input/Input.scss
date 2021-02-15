@@ -6,18 +6,67 @@
     margin-bottom: 26px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.42);
     padding-right: 6px;
+    position: relative;
     input{
         width: 100%;
         font-size: 0.8rem;
         line-height: 0.9rem;
-        color: rgba(255, 255, 255, 0.48);
+        color: rgba(255, 255, 255, 0.9);
         height: 100%;
+        &::placeholder{
+            color: rgba(255, 255, 255, 0.48);
+        }
+    }
+    &-placeholder{
+        position: absolute;
+        font-size: 0.8rem;
+        line-height: 0.9rem;
+        transition-duration: .2s;
+        top: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        cursor: pointer;
+        height: 100%;
+        &-name{
+            transition-duration: .2s;
+            color: rgba(255, 255, 255, 0.48);
+            span{
+                color: #0071BC;
+            }
+        }
+        &-hint{
+            color: #BEC2C4;
+            opacity: 0.9;
+            font-size: 0.7rem;
+            line-height: 0.8rem;
+            font-weight: 400;
+            transition-duration: .2s;
+        }
+        &-active{
+            top: -6px;
+            height: 10px;
+            .input-placeholder-name{
+                color: #2C98F0;
+                opacity: 0.87;
+                font-size: 0.6rem;
+                stroke-linejoin: 0.6rem;
+            } 
+            .input-placeholder-hint{
+                opacity: 0;
+            }
+        }
     }
     &-eye{
         margin-bottom: 0px;
         cursor: pointer;
+        min-width: 16px;
         path{
             fill: rgba(255, 255, 255, 0.48);
         }
+    }
+    &-active{
+        border-bottom: 1px solid #2C98F0;
     }
 }

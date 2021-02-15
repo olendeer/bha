@@ -10,4 +10,13 @@
     font-size: 0.7rem;
     line-height: 0.8rem;
     padding: 0px 16px;
+    &:active{
+        background: #004E82;
+    }
+    &-cancel{
+        background: #989898;
+        &:active{
+            background: #A6A6A6;
+        }
+    }
 }

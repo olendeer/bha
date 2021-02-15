@@ -1,0 +1,89 @@
+.register-wrapper{
+    height: 100vh;
+    padding: 84px 0px;
+    .register{
+        width: 1024px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        &-header{
+            width: 100%;
+            height: 57px;
+            min-height: 57px;
+            background: rgba(33, 33, 33, 0.9);
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            padding: 0px 15px;
+            cursor: pointer;
+            color: #FFFFFF;
+            letter-spacing: 0.5px;
+            font-feature-settings: 'pnum' on, 'lnum' on;
+            font-size: 1rem;
+            line-height: 1.6rem;
+            font-weight: 500;
+        }
+        &-body{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 20px 45px 20px 15px;
+            &-error{
+                padding: 16px 15px;
+                background: rgba(66, 66, 66, 0.8);
+                box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.05);
+                border-radius: 5px;
+                max-width: 563px;
+                color: $colorW;
+                text-align: center;
+                font-size: 0.6rem;
+                line-height: 0.7rem;
+                margin-bottom: 20px;
+                transform: translateY(-10px);
+                opacity: 0;
+                text-align: left;
+                visibility: hidden;
+                transition-duration: .2s;
+                min-height: 50px;
+                max-height: 50px;
+                display: flex;
+                align-items: center;
+                &-active{
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translateY(0px);
+                    max-height: 200px;
+                }
+            }
+            &-desc{
+                color: $colorW;
+                font-size: 0.7rem;
+                line-height: 0.8rem;
+                opacity: 0.9;
+                margin-bottom: 39px;
+                span{
+                    color: #0071BC;
+                }
+            }
+            &-inputs{
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                .inputs-wrapper{
+                    display: flex;
+                    flex-wrap: wrap;
+                    .input{
+                        margin-right: 20px;
+                        width: 22.925%;
+                    }
+                }
+                .nav-wrapper{
+                    display: flex;
+                    align-items: center;
+                }
+            }
+        }
+    }
+}

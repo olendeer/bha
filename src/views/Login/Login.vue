@@ -30,32 +30,27 @@
         />
         <router-link to="/reset" class="login-reset">Forgot password</router-link>
         <div class="login-register">
-            Don't have an account yet? <span>Register</span>
+            Don't have an account yet? <span @click="userSelect = true">Register</span>
         </div>
+        <UserSelect :open="userSelect" @closeClick="userSelect = false"/>
     </form>
 </template>
 
 <script>
 
+    import { auth } from '../../utilites/api'
+
     import Input from '@/components/Input/Input'
     import Button from '@/components/Button/Button'
-
-
-    import {
-        setAuth
-    } from '../../utilites/auth'
-
-    import {
-        Auth
-    } from '../../utilites/api'
+    import UserSelect from '@/components/UserSelect/UserSelect'
 
     import Logo from '../../assets/img/logo-min.svg'
 
     import './Login.scss'
 
     export default {
-        props: ['user'],
-        components: { Logo, Input, Button },
+        props: ['user', 'message'],
+        components: { Logo, Input, Button, UserSelect },
         data: () => ({
             inputs: {
                 username : '',
@@ -63,7 +58,22 @@
             },
             error: true,
             errorMessage: 'Please enter your username and password then click LOG IN',
+            userSelect : false
         }),
+        mounted() {
+            if(this.$route.params.message){
+                this.errorMessage = this.$route.params.message
+                setTimeout(() => {
+                    this.error = false
+                }, 1000)
+                setTimeout(() => {
+                    this.errorMessage = 'Please enter your username and password then click LOG IN'
+                }, 1300)
+                setTimeout(() => {
+                    this.error = true
+                }, 1500)
+            }
+        },
         methods: {
             inputChange(value){
                 this.inputs[value.name] = value.value
@@ -93,7 +103,7 @@
             },
             send() {
                 if(this.inputCheck()){
-                    Auth(this.inputs.username, this.inputs.password)
+                    auth(this.inputs.username, this.inputs.password)
                     .then(res => this.checkResponse(res))
                 }
             },
@@ -102,8 +112,7 @@
                     this.errorMessage = response.errors.pop().message
                     this.error = true
                 } else {
-                    this.$emit('setUserData', { user: response.data.login.user, token: response.data.id })
-                    setAuth()
+                    this.$emit('setUserData', { user: response.data.login.user, token: response.data.login.id })
                     this.$router.push('/dashboard')
                 }
             }

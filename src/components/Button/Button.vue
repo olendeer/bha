@@ -1,8 +1,8 @@
 <template>
     <button
-        :class="['button']"
+        :class="['button', { 'button-cancel' : mode === 'cancel' }]"
         @click.prevent.stop="$emit('click')"
-        :style="{ width: width + 'px' }"
+        :style="{ width: width + 'px', marginRight: margin + 'px', marginBottom: marginBottom + 'px'}"
     > {{ title }} </button>
 </template>
 
@@ -14,6 +14,6 @@
         data: () => ({
 
         }),
-        props: ['title', 'width']
+        props: ['title', 'width', 'mode', 'margin', 'marginBottom']
     }
 </script>
