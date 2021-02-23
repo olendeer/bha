@@ -92,9 +92,9 @@
                     this.error = true
                     this.errorMessage = 'Please enter your password'
                     return false
-                } else if (this.inputs.password.trim().length < 8){
+                } else if (this.inputs.password.trim().length < 6){
                     this.error = true
-                    this.errorMessage = 'The password must contain at least 8 characters'
+                    this.errorMessage = 'The password must contain at least 6 characters'
                     return false
                 } else {
                     this.error = false

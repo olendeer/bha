@@ -194,9 +194,9 @@
                     this.error = true
                     this.errorMessage = 'Please enter a valid email address'
                     return false
-                } else if (this.inputs.password.length < 8){
+                } else if (this.inputs.password.length < 6){
                     this.error = true
-                    this.errorMessage = 'The password must contain at least 8 characters'
+                    this.errorMessage = 'The password must contain at least 6 characters'
                     return false
                 } else if (this.inputs.password !== this.inputs.repeat){
                     this.error = true
