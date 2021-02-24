@@ -60,7 +60,7 @@
 				if(!this.user && this.$route.path !== '/login'){
 					this.$router.push('/login')
 				}
-			}, 1000)
+			}, 5000)
 		},
 		methods: {
 			setUserData({ user, token }) {

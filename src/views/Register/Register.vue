@@ -88,7 +88,7 @@
                             :name="'address'"
                             :type="'text'"
                             @inputChange="inputChange"
-                            :placeholder="'Contact adress'"
+                            :placeholder="'Contact address'"
                             :marginBottom="37"
                             @focus="error = false"
                             @blur="inputCheck"

@@ -65,13 +65,13 @@
                 this.errorMessage = this.$route.params.message
                 setTimeout(() => {
                     this.error = false
-                }, 1000)
+                }, 5000)
                 setTimeout(() => {
                     this.errorMessage = 'Please enter your username and password then click LOG IN'
-                }, 1300)
+                }, 5300)
                 setTimeout(() => {
                     this.error = true
-                }, 1500)
+                }, 5500)
             }
         },
         methods: {
