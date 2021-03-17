@@ -68,7 +68,18 @@
             fill: rgba(255, 255, 255, 0.48);
         }
     }
+    &-arrow{
+        transform: rotate(180deg);
+        path{
+            fill: rgba(255, 255, 255, 0.48);
+        }
+    }
     &-active{
         border-bottom: 1px solid #2C98F0;
+    }
+    .vc-container{
+        position: absolute;
+        top: 40px;
+        z-index: 2;
     }
 }

@@ -13,6 +13,15 @@
             <div class="input-placeholder-name" @click.stop="$event.target.parentElement.previousElementSibling.focus()">{{placeholder}} <span @click.stop="$event.target.parentElement.parentElement.previousElementSibling.focus()">{{ required ? '*' : '' }}</span> </div>
             <span class="input-placeholder-hint" @click.stop="$event.target.parentElement.previousElementSibling.focus()">{{ hint || '' }}</span>
         </div>
+         <calendar 
+            v-model="birthValue"
+            is-dark
+            color="red"
+            v-if="isOpenCalendar && birth"
+            :dayclick="$emit('dayclick')"
+            :locale="'en'"
+        ></calendar>
+        <Arrow v-if="birth" class="input-arrow" />
         <Eye v-if="type === 'password'" :class="{'input-eye' : true, 'input-eye-active' : typeInput === 'text'}" @click="visiblePassword"/>
     </div>
 </template>
@@ -21,14 +30,20 @@
 
     import Eye from '../../assets/img/eye.svg'
 
+    import DatePicker from 'v-calendar/lib/components/date-picker.umd'
+
+    import Arrow from '@/assets/img/arrow_test.svg'
+
+
     import './Input.scss'
 
     export default {
-        props: ['name', 'value', 'type', 'placeholder', 'marginBottom', 'required', 'hint'],
+        props: ['name', 'value', 'type', 'placeholder', 'marginBottom', 'required', 'hint', 'birth', 'isOpenCalendar'],
         data(){
             return {
                 typeInput: this.type,
-                active: false
+                active: false,
+                birthValue: ''
             }
         },
         methods: {
@@ -44,11 +59,25 @@
             },
             blur(event){
                 this.$emit('blur', event.target)
-                if(!this.value.length > 0){
+                if(!this.value.length > 0 && !this.birth){
                     this.active = false   
+                }
+                // console.log('blur')
+                if(this.birth){
+                    // console.log(this.value)
+                    // this.$emit('closeCalendar')
                 }
             }
         },
-        components: { Eye },
+        components: { Eye, calendar: DatePicker, Arrow },
+        watch: {
+            birthValue(){
+                this.update(new Date(this.birthValue).getMonth() + '/' + new Date(this.birthValue).getDate() + '/' +  new Date(this.birthValue).getFullYear() )
+                this.$emit('closeCalendar')
+                if(this.birthValue.toString().length){
+                    this.active = true 
+                }
+            }
+        }
     }
 </script>

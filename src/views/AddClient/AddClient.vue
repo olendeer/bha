@@ -30,16 +30,20 @@
                             @blur="inputCheck"
                             :required="true"
                         />
-                        <Input
-                            :value="inputs.birth"
+                         <Input
+                            :value="birth"
                             :name="'birth'"
                             :type="'text'"
                             @inputChange="inputChange"
                             :placeholder="'Date of birth'"
                             :marginBottom="37"
-                            @focus="error = false"
-                            @blur="inputCheck"
+                            @focus="focusBirth"
+                            @blur="blurBirth"
                             :required="true"
+                            :birth="true"
+                            :isOpenCalendar="isOpenCalendar"
+                            @dayclick="dayclick"
+                            @closeCalendar="closeCalendar"
                         />
                         <div class="add-client-body-inputs-gender">
                             <div :class="['gender-item', {'gender-item-active' : inputs.gender === 'male'}]" @click="inputs = {...inputs, gender: 'male'}">
@@ -171,28 +175,34 @@
                     notes: '',
                     first_name: '',
                     last_name: '',
-                    birth: '',
                     email : '',
                     phone: '',
                     address: '',
                     username: '',
                     password: '',
                     repeat: '',
-                    gender: 'male'
+                    gender: 'male',
                 },
                 error: false,
                 errorMessage: '',
+                isOpenCalendar: false,
+                birth: ''
             }
         },
         components: { Input, Button, Back },
         props: ['token'],
         methods: {
             inputChange(value){
-                this.inputs[value.name] = value.value
-                this.error = false
+                if(value.name === 'birth'){
+                    this.birth = value.value
+                    this.error = false
+                } else {
+                    this.inputs[value.name] = value.value
+                    this.error = false
+                }
             },
             inputCheck(input){
-                if(!this.inputs.first_name.trim() || !this.inputs.last_name.trim() || !this.inputs.email.trim() || !this.inputs.username.trim() || !this.inputs.password.trim() || !this.inputs.repeat.trim() || !this.inputs.birth.trim()){
+                if(!this.inputs.first_name.trim() || !this.inputs.last_name.trim() || !this.inputs.email.trim() || !this.inputs.username.trim() || !this.inputs.password.trim() || !this.inputs.repeat.trim() || !this.birth.toString().trim()){
                     this.error = true
                     this.errorMessage = 'Fill in all required fields'
                     return false
@@ -213,7 +223,7 @@
             },
             send() {
                 if(this.inputCheck()){
-                    createUser(this.token, this.inputs)
+                    createUser(this.token, {...this.inputs, birth: this.birth})
                     .then(res => {
                         if(res.errors){
                             this.errorMessage = res.errors.pop().message
@@ -224,6 +234,34 @@
                     })
                 }
             },
+            focusBirth(){
+                this.error = false
+                this.isOpenCalendar = true
+            },
+            closeCalendar(){
+                this.isOpenCalendar = false
+            },
+            blurBirth(){
+                this.inputCheck()
+                // console.log(this.inputs.birth.toString().length)
+                // if(this.inputs.birth.length){
+                    // this.isOpenCalendar = false
+                // }
+                
+                // this.isOpenCalendar = false
+            },
+            dayclick(){
+                // this.isOpenCalendar = false
+                // if(this.birth.length > 0){
+                //     this.isOpenCalendar = false
+                // }
+                // console.log('day')
+            }
+        },
+        watch: {
+            birth(){
+                console.log('sdf')
+            }
         }
     }
 </script>
