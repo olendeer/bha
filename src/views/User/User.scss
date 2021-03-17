@@ -1,0 +1,41 @@
+.user-wrapper{
+    height: 100%;
+    width: 1024px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    .user{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        &-test{
+            display: flex;
+            align-items: center;
+            margin-top: 25px;
+            margin-bottom: 20px;
+            .right{
+                transform: rotate(180deg);
+                margin-left: 70px;
+                margin-right: 0px;
+            }
+            svg{
+                cursor: pointer;
+                margin-right: 70px;
+            }
+            span{
+                color: #FFFFFF;
+                font-size: 0.8rem;
+                line-height: 0.95rem;
+                font-weight: 500;
+            }
+        }
+        &-data{
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            
+            padding: 0px 20px;
+        }
+    }
+}

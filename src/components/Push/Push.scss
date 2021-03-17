@@ -19,6 +19,7 @@
     min-height: 50px;
     display: flex;
     align-items: center;
+    z-index: 1;
     &-active{
         opacity: 1;
         visibility: visible;

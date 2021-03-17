@@ -6,6 +6,7 @@
 			:token="token"
 			@logoutController="logoutController"
 			@pushController="pushController"
+			:userId="userId"
 		/>
 		<Start :open="start" />
 		<Logout 
@@ -42,7 +43,8 @@
 				token : null,
 				push: false,
 				pushText: '',
-				timer: null
+				timer: null,
+				userId: null
 			}
 		},
 		mounted() {
@@ -58,12 +60,14 @@
 			setTimeout(() => {
 				this.start = false
 				if(!this.user && this.$route.path !== '/login'){
-					this.$router.push('/login')
+					// this.$router.push('/login')
 				}
 			}, 5000)
 		},
 		methods: {
-			setUserData({ user, token }) {
+			setUserData({ user, token, userId }) {
+				console.log(userId)
+				this.userId = userId
 				this.user = user
 				this.token = token
 			},
@@ -75,6 +79,7 @@
 				this.logout = !this.logout
 			},
 			pushController(text){
+				console.log(text)
 				this.pushText = text
 				this.push = true,
 				setTimeout(() => {

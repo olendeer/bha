@@ -1,0 +1,48 @@
+.user-base{
+    background: rgba(33, 33, 33, 0.6);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    height: 57px;
+    padding: 0px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &-user{
+        display: flex;
+        align-items: center;
+        &-image{
+            width: 33px;
+            height: 33px;
+            margin-right: 10px;
+            svg{
+                width: 100%;
+                height: 100%;
+            }
+        }
+        &-info{
+            color: rgba(255, 255, 255, 0.87);
+            font-size: 0.8rem;
+            line-height: 0.95rem;
+            font-weight: bold;
+        }
+    }
+    &-nav{
+        display: flex;
+        align-items: center;
+        height: 100%;
+        &-btn{
+            height: 100%;
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            color: #FFFFFF;
+            font-size: 0.7rem;
+            line-height: 0.8rem;
+            cursor: pointer;
+
+            svg{
+                margin-right: 5px;
+            }
+        }
+    }
+}

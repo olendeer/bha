@@ -2,7 +2,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     width: 345px;
+    min-height: calc(100vh - 168px);
     svg.logo{
         margin-bottom: 16px;        
     }

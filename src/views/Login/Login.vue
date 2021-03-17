@@ -112,7 +112,8 @@
                     this.errorMessage = response.errors.pop().message
                     this.error = true
                 } else {
-                    this.$emit('setUserData', { user: response.data.login.user, token: response.data.login.id })
+                    console.log(response.data.login.user)
+                    this.$emit('setUserData', { user: response.data.login.user, token: response.data.login.id, userId:  response.data.login.user.caregiver.id})
                     this.$router.push('/dashboard')
                 }
             }
