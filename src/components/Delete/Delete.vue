@@ -1,7 +1,7 @@
 <template>
     <div :class="['delete', {'delete-active' : open} ]" @click="close($event)">
         <div class="delete-content">
-            <div class="delete-content-header">You are about to delete this My metronome breath pacer model preset. To confirm that you are certain to delete it, click YES, DELETE IT.</div>
+            <div class="delete-content-header">You are about to delete this test record. All data associated with this test will become inaccessible. To confirm that you are certain to delete it, click YES, DELETE IT.</div>
             <div class="delete-content-nav">
                 <Button
                     :title="'Delete it'"

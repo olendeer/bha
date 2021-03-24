@@ -2,12 +2,18 @@
     <div :class="['input', { 'input-active' : active }]" :style="{ marginBottom: marginBottom + 'px' }">
         <input 
             :type="typeInput"
+            :style="{display: 'none'}"
+            :name="name"
+        />
+        <input 
+            :type="typeInput"
             :name="name"
             :value="value"
             @input="update($event.target.value)"
             class="input-inner"
-            @focus="focus"
+            @focus="focus($event)"
             @blur="blur($event)"
+            autocomplete="new-password"
         >
         <div :class="['input-placeholder', { 'input-placeholder-active' : active }]" @click.stop="$event.target.previousElementSibling.focus()">
             <div class="input-placeholder-name" @click.stop="$event.target.parentElement.previousElementSibling.focus()">{{placeholder}} <span @click.stop="$event.target.parentElement.parentElement.previousElementSibling.focus()">{{ required ? '*' : '' }}</span> </div>
@@ -53,7 +59,9 @@
             visiblePassword(){
                 this.typeInput = this.typeInput === 'password' ? 'text' : 'password'
             },
-            focus() {
+            focus(event) {
+                console.log(event)
+                event.target.removeAttribute('readonly')
                 this.$emit('focus')
                 this.active = true
             },
@@ -69,6 +77,11 @@
                 }
             }
         },
+        // mounted(){
+        //     if(this.value){
+        //         this.active = true
+        //     }
+        // },
         components: { Eye, calendar: DatePicker, Arrow },
         watch: {
             birthValue(){
@@ -76,6 +89,11 @@
                 this.$emit('closeCalendar')
                 if(this.birthValue.toString().length){
                     this.active = true 
+                }
+            },
+            value(){
+                if(this.value){
+                    this.active = true
                 }
             }
         }

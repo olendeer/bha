@@ -66,6 +66,7 @@
                             this.$emit('pushController', res.errors.pop().message)
                         } else {
                             this.$emit('commentController')
+                            this.test.procedureComment = this.comment
                         }
                     })
                 }
@@ -78,7 +79,8 @@
         },
         watch: {
             open(){
-                this.comment = ''
+                console.log(this.test)
+                this.comment = this.test.procedureComment
             }
         }
     }
