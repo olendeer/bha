@@ -24,10 +24,10 @@
                 <Print/>
                 Print
             </div>
-            <download-excel class="user-base-nav-btn" :data="test" :before-generate="excel" :name="excelName + '.xls'">
+            <div class="user-base-nav-btn" @click="excelHandler">
                 <Export/>
                 Export
-            </download-excel>
+            </div>
             <div class="user-base-nav-btn" @click="$emit('commentController')">
                 <Comment/>
                 Comment
@@ -43,10 +43,11 @@
 <script>
 
     import { date } from '../../utilites/functions'
+    import { xls } from '../../utilites/excel'
 
     import html2canvas from 'html2canvas'
     import { jsPDF } from "jspdf";
-    import JsonExcel from "vue-json-excel";
+
 
     import Diff from '@/assets/img/base/diff.svg'
     import Eye from '@/assets/img/base/eye.svg'
@@ -63,7 +64,7 @@
 
     export default {
         props: ['user', 'tests'],
-        components: { Diff, Eye, Download, Print, Export, Comment, Female, Male, Archive, 'download-excel': JsonExcel },
+        components: { Diff, Eye, Download, Print, Export, Comment, Female, Male, Archive },
         data(){
             return {
                 age : 0,
@@ -97,23 +98,24 @@
                     }
                 });
             },
-            excel(){
+            excelHandler(){
                 let temp = this.tests.find(item => item.active).data
                 let excelData = []
                 for(let key in temp){
                     excelData.push({ Name: key, Value: temp[key] })
                 }
-                this.test = excelData
+                
+                let name;
                 if(this.$route.path.includes('single')){
-                    this.excelName = 'Health_Single_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
+                    name = 'Health_Single_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
                 } else if (this.$route.path.includes('post')){
-                    this.excelName = 'Health_Pre_Post_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
+                    name = 'Health_Pre_Post_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
                 } else if (this.$route.path.includes('cardiac')){
-                    this.excelName = 'Cardiac_Resonance_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
+                    name = 'Cardiac_Resonance_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
                 } else if (this.$route.path.includes('breatwork')){
-                    this.excelName = 'Breathwork_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
+                    name = 'Breathwork_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
                 }
-                this.$emit('pushController', 'A new Excel document was successfully saved')
+                xls(name, excelData)
             }
         },
         computed: {
