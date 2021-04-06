@@ -38,15 +38,17 @@
                 color: #FFFFFF;
                 font-size: 0.7rem;
                 line-height: 0.8rem;
+                white-space: nowrap;
                 span{
                     font-weight: 500;
+                    margin-left: 3px;
                 }
                 &:not(:last-child){
                     margin-bottom: 19px;
                 }
             }
             .column-right{
-                width: 135px;
+                width: 145px;
                 display: flex;
                 flex-direction: column;
             }

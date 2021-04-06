@@ -32,6 +32,13 @@
 
 	import { logout } from '@/utilites/api'
 
+	Array.prototype.chunk = function ( n ) {
+		if ( !this.length ) {
+			return [];
+		}
+		return [this.slice(0, n)].concat(this.slice(n).chunk(n));
+	}
+
 	export default {
 		name: 'App',
 		components: { Start, Logout, Push },
@@ -60,7 +67,7 @@
 			setTimeout(() => {
 				this.start = false
 				if(!this.user && this.$route.path !== '/login'){
-					// this.$router.push('/login')
+					this.$router.push('/login')
 				}
 			}, 5000)
 		},

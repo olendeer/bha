@@ -7,12 +7,12 @@
             </div>
             <div class="user-base-user-info">{{user.lastName}}, {{user.firstName}} (Age {{ageCount}})</div>
         </div>
-        <div class="user-base-nav" v-if="tests.length">
-            <div class="user-base-nav-btn">
+        <div class="user-base-nav" v-if="test">
+            <div class="user-base-nav-btn" :style="{opacity : diff ? 1 : .4}" @click="$emit('changeDiff')">
                 <Diff/>
                 Value/Diff
             </div>
-            <div class="user-base-nav-btn">
+            <div class="user-base-nav-btn" :style="{opacity : test.show ? 1 : .4}" @click="$emit('changeShow', test.id)">
                 <Eye/>
                 Show/Hide
             </div>
@@ -63,43 +63,43 @@
     import './UserBase.scss'
 
     export default {
-        props: ['user', 'tests'],
+        props: ['user', 'test', 'diff'],
         components: { Diff, Eye, Download, Print, Export, Comment, Female, Male, Archive },
         data(){
             return {
                 age : 0,
-                test: [ ],
                 excelName: ''
             }
         },
         methods: {
             pdf(mode){
-                html2canvas(document.querySelector('.user-data')).then(canvas => {
-                    const doc = jsPDF({ orientation: 'l' })
-                    const screenshot = canvas.toDataURL('image/png')
-                    let name = '';
-                    if(this.$route.path.includes('single')){
-                        name = 'Health_Single_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
-                    } else if (this.$route.path.includes('post')){
-                        name = 'Health_Pre_Post_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
-                    } else if (this.$route.path.includes('cardiac')){
-                        name = 'Cardiac_Resonance_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
-                    } else if (this.$route.path.includes('breatwork')){
-                        name = 'Breathwork_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
-                    }
+                // html2canvas(document.querySelector('.user-data')).then(canvas => {
+                //     const doc = jsPDF({ orientation: 'l' })
+                //     const screenshot = canvas.toDataURL('image/png')
+                //     let name = '';
+                //     if(this.$route.path.includes('single')){
+                //         name = 'Health_Single_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
+                //     } else if (this.$route.path.includes('post')){
+                //         name = 'Health_Pre_Post_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
+                //     } else if (this.$route.path.includes('cardiac')){
+                //         name = 'Cardiac_Resonance_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
+                //     } else if (this.$route.path.includes('breatwork')){
+                //         name = 'Breathwork_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
+                //     }
 
-                    doc.addImage(screenshot, 'PNG', 0, 20, 290, this.$route.path.includes('post') ? 160 : 120);
-                    if(mode === 'print'){
-                        doc.autoPrint()
-                        doc.save(name + '.pdf');
-                    } else {
-                        doc.save(name + '.pdf');
-                        this.$emit('pushController', 'A new PDF report was successfully saved')
-                    }
-                });
+                //     doc.addImage(screenshot, 'PNG', 0, 20, 290, this.$route.path.includes('post') ? 160 : 120);
+                //     if(mode === 'print'){
+                //         doc.autoPrint()
+                //         doc.save(name + '.pdf');
+                //     } else {
+                //         doc.save(name + '.pdf');
+                //         this.$emit('pushController', 'A new PDF report was successfully saved')
+                //     }
+                // });
+                
             },
             excelHandler(){
-                let temp = this.tests.find(item => item.active).data
+                let temp = this.test.data
                 let excelData = []
                 for(let key in temp){
                     excelData.push({ Name: key, Value: temp[key] })

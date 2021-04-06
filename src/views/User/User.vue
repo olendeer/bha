@@ -4,38 +4,44 @@
             <UserHeader
                 :tab="tab"
                 @changeTab="changeTab"
+                :client="user"
             />
             <UserBase
                 :user="user"
                 @pushController="pushController"
                 @commentController="commentController"
                 @deleteController="deleteController"
-                :tests="tests"
+                :test="tests[this.tab].find(item => item.active)"
                 v-if="user"
+                :diff="diff"
+                @changeDiff="changeDiff"
+                @changeShow="changeShow"
             />
             <Comment
                 :open="isOpenComments"
                 :token="token"
                 @commentController="commentController"
                 @pushController="pushController"
-                :test="tests.find(item => item.active)"
+                :test="tests[this.tab].find(item => item.active)"
             />
             <Delete
                 :open="isOpenDelete"
                 :token="token"
                 @deleteController="deleteController"
                 @pushController="pushController"
-                :test="tests.find(item => item.active)"
+                @deleteTest="deleteTest"
+                :test="tests[this.tab].find(item => item.active)"
             />
-            <div class="user-test" v-if="tests.length">
-                <Arrow/>
-                <span>Test Date</span>
-                <Arrow class="right"/>
+            <div class="user-test" v-if="tests[this.tab].find(item => item.active)">
+                <Arrow @click="changeTest('prev')"/>
+                <span v-html="testDate"></span>
+                <Arrow class="right" @click="changeTest('next')"/>
             </div>
             <router-view 
                 name="user"
                 :user="user"
-                :test="tests.find(item => item.active)"
+                :test="tests[this.tab].find(item => item.active)"
+                v-if="tests[this.tab].find(item => item.active)"
             />
         </div>
     </div>
@@ -44,6 +50,7 @@
 <script>
 
     import { getUser } from '../../utilites/api'
+    import { date } from '../../utilites/functions'
 
     import UserHeader from '@/components/UserHeader/UserHeader'
     import UserBase from '@/components/UserBase/UserBase'
@@ -58,10 +65,16 @@
         data(){
             return {
                 user: null,
-                tests: [],
-                tab: 0,
+                tests: {
+                    single: [],
+                    prepost: [],
+                    cardiac: [],
+                    breatwork: []
+                },
+                tab: 'single',
                 isOpenComments: false,
-                isOpenDelete: false
+                isOpenDelete: false,
+                diff: false,
             }
         },
         props: ['token'],
@@ -76,17 +89,13 @@
                     this.$router.push('/dashboard')
                 } else {
                     if(res.data.clientData.nodes[0]){
-                        this.$router.push('/user/' + this.$route.params.id + '/' + res.data.clientData.nodes[0].id + '/single')
-                        console.log(res.data.clientData.nodes)
-                        this.tests = res.data.clientData.nodes.map((item, index) => index === 0 ? {...item, data: JSON.parse(JSON.parse(item.data)), active: true} : {...item, data: JSON.parse(JSON.parse(item.data)), active: false})
+                        this.readTest(res.data.clientData.nodes)
+                        this.$router.push('/user/' + this.$route.params.id + '/single')
                     }
                 }
             })
         },
         methods: {
-            changeTab(index){
-                this.tab = index
-            },
             pushController(message){
                 this.$emit('pushController', message)
             },
@@ -95,8 +104,155 @@
             },
             deleteController(){
                 this.isOpenDelete = !this.isOpenDelete
+            },
+            readTest(tests){
+                tests = tests.map((item) => ({...item, show: true, data: JSON.parse(JSON.parse(item.data))})).filter(item => !(item.procedure.name === 'Biological age'))
+                console.log('ALL', tests)
+                tests = tests
+                let bodys = tests.filter(body => body.procedure.name === 'Body measurements').sort((a, b) => b.createdAt - a.createdAt)
+                let compose = tests.filter(body => body.procedure.name === 'Body composition').sort((a, b) => b.createdAt - a.createdAt)
+                let glucose = tests.filter(body => body.procedure.name === 'Blood glucose').sort((a, b) => b.createdAt - a.createdAt)
+                let pressure = tests.filter(body => body.procedure.name === 'Blood pressure').sort((a, b) => b.createdAt - a.createdAt)
+                let single = tests.filter(item => item.procedure.name === 'Health test' && !item.data.Category).map((item, index) => {
+                    let date = item.testedDate ? new Date(item.testedDate).getTime() : new Date(item.createdAt).getTime()
+                    return {
+                        ...item,
+                        date: date,
+                        body: bodys.reverse().find(i => i.createdAt < item.createdAt) || bodys.find(i => i.createdAt > item.createdAt),
+                        compose: compose.reverse().find(i => i.createdAt < item.createdAt) || compose.find(i => i.createdAt > item.createdAt),
+                        glucose: glucose.reverse().find(i => i.createdAt < item.createdAt) || glucose.find(i => i.createdAt > item.createdAt),
+                        pressure: pressure.reverse().find(i => i.createdAt < item.createdAt) || pressure.find(i => i.createdAt > item.createdAt),
+                        active : index === 0,
+                        index,
+                        type: 'single'
+                    }
+                })
+                let pre = tests.filter(item => item.procedure.name === 'Health test' && item.data.Category === 1).map((item, index) => {
+                    let date = item.testedDate ? new Date(item.testedDate).getTime() : new Date(item.createdAt).getTime()
+                    return {
+                        ...item,
+                        date: date,
+                        body: bodys.reverse().find(i => i.createdAt < item.createdAt) || bodys.find(i => i.createdAt > item.createdAt),
+                        compose: compose.reverse().find(i => i.createdAt < item.createdAt) || compose.find(i => i.createdAt > item.createdAt),
+                        glucose: glucose.reverse().find(i => i.createdAt < item.createdAt) || glucose.find(i => i.createdAt > item.createdAt),
+                        pressure: pressure.reverse().find(i => i.createdAt < item.createdAt) || pressure.find(i => i.createdAt > item.createdAt),
+                    }
+                })
+                let post = tests.filter(item => item.procedure.name === 'Health test' && item.data.Category === 2).map((item, index) => {
+                    return {
+                        ...item,
+                        body: bodys.reverse().find(i => i.createdAt < item.createdAt) || bodys.find(i => i.createdAt > item.createdAt),
+                        compose: compose.reverse().find(i => i.createdAt < item.createdAt) || compose.find(i => i.createdAt > item.createdAt),
+                        glucose: glucose.reverse().find(i => i.createdAt < item.createdAt) || glucose.find(i => i.createdAt > item.createdAt),
+                        pressure: pressure.reverse().find(i => i.createdAt < item.createdAt) || pressure.find(i => i.createdAt > item.createdAt),
+                    }
+                })
+                let prepost = pre.map((item, index) => {
+                    return {
+                        pre: item,
+                        post: post[index],
+                        date: item.date,
+                        index,
+                        id: item.id,
+                        active: index === 0,
+                        type: 'prepost'
+                    }
+                })
+                let cardiac = tests.filter(item => item.procedure.name === 'Breathwork' && item.data.Category === 4).map((item, index) => {
+                    let date = item.testedDate ? new Date(item.testedDate).getTime() : new Date(item.createdAt).getTime()
+                    let raw = JSON.parse(JSON.parse(item.rawData2)).filter(item => item > 0)
+                    let rawAll = raw.length / 100
+                    let poor = raw.filter(item => (item > 0 && item < 30)).length / rawAll
+                    let fair = raw.filter(item => (item >= 30 && item < 60)).length / rawAll
+                    let good = raw.filter(item => (item >= 60)).length / rawAll
+                    return {
+                        ...item,
+                        date: date,
+                        active : index === 0,
+                        index,
+                        resonance: {
+                            poor,
+                            fair,
+                            good
+                        },
+                        type: 'cardiac'
+                    }
+                })
+                let breatwork = tests.filter(item => item.procedure.name === 'Breathwork' && item.data.Category === 3).map((item, index) => {
+                    let date = item.testedDate ? new Date(item.testedDate).getTime() : new Date(item.createdAt).getTime()
+                    let raw = JSON.parse(JSON.parse(item.rawData2)).filter(item => item > 0)
+                    let rawAll = raw.length / 100
+                    let poor = raw.filter(item => (item > 0 && item < 30)).length / rawAll
+                    let fair = raw.filter(item => (item >= 30 && item < 60)).length / rawAll
+                    let good = raw.filter(item => (item >= 60)).length / rawAll
+                    return {
+                        ...item,
+                        date: date,
+                        active : index === 0,
+                        index,
+                        resonance: {
+                            poor,
+                            fair,
+                            good
+                        },
+                        type: 'breatwork'
+                    }
+                })
+                this.tests = {
+                    single,
+                    prepost,
+                    cardiac,
+                    breatwork
+                }
+            },
+            deleteTest(id){
+                this.tests[this.tab] = this.tests[this.tab].filter(item => !(item.id === id)).map((item, index) => ({...item, active: index === 0, index}))
+            },
+            changeTab(link){
+                this.tab = link
+                this.$router.push(link)
+            },
+            changeTest(route){
+                let indexActive = this.tests[this.tab].find((item, index) => item.active).index
+                if(route === 'next'){
+                    if(this.tests[this.tab][indexActive + 1]){
+                        this.tests = {
+                            ...this.tests,
+                            [this.tab]: this.tests[this.tab].map((item, index) => indexActive + 1 === index ? {...item, active: true} : {...item, active: false} )
+                        }
+                    }
+                } else if (route === 'prev'){
+                    if(this.tests[this.tab][indexActive - 1]){
+                        this.tests = {
+                            ...this.tests,
+                            [this.tab]: this.tests[this.tab].map((item, index) => indexActive - 1 === index ? {...item, active: true} : {...item, active: false} )
+                        }
+                    }
+                }
+            },
+            changeDiff(){
+                this.diff = !this.diff
+            },
+            changeShow(id){
+                this.tests[this.tab] = this.tests[this.tab].map(item => item.id === id ? {...item, show: !item.show} : item)
             }
         },
+        watch: {
+            tests(){
+                console.log(this.tab.toUpperCase(), this.tests[this.tab].find(item => item.active))
+            },
+            user(){
+                console.log('userPage', this.user)
+            }
+        },
+        computed: {
+            testDate(){
+                if(this.tests[this.tab].find(item => item.active)){
+                    return date(this.tests[this.tab].find(item => item.active).date, 'td')
+                }
+                return ''
+            }
+        }
     }
 </script>
 

@@ -1,12 +1,13 @@
 <template>
     <div class="user-header">
         <Back class="back" @click="$router.push('/dashboard')"/>
-        <div @click="pushTab('single', 0)" :class="['user-header-btn', { 'user-header-btn-active' : tab === 0 }]"><List/> Health single</div>
-        <div @click="pushTab('post', 1)" :class="['user-header-btn', { 'user-header-btn-active' : tab === 1 }]"><List/> Health Pre/Post</div>
-        <div @click="pushTab('cardiac', 2)" :class="['user-header-btn', { 'user-header-btn-active' : tab === 2 }]"><List/> Cardiac resonance</div>
-        <div @click="pushTab('breatwork', 3)" :class="['user-header-btn', { 'user-header-btn-active' : tab === 3 }]"><List/> Breathwork</div>
+        <div @click="pushTab('single')" :class="['user-header-btn', { 'user-header-btn-active' : tab === 'single' }]"><List/> Health single</div>
+        <div @click="pushTab('prepost')" :class="['user-header-btn', { 'user-header-btn-active' : tab === 'prepost' }]"><List/> Health Pre/Post</div>
+        <div @click="pushTab('cardiac')" :class="['user-header-btn', { 'user-header-btn-active' : tab === 'cardiac' }]"><List/> Cardiac resonance</div>
+        <div @click="pushTab('breatwork')" :class="['user-header-btn', { 'user-header-btn-active' : tab === 'breatwork' }]"><List/> Breathwork</div>
         <div @click="$emit('changeTab', 4)" :class="['user-header-btn', { 'user-header-btn-active' : tab === 4 }]"><History/> History</div>
-        <div @click="$emit('changeTab', 5)" :class="['user-header-btn', { 'user-header-btn-active' : tab === 5 }]"><Modify/> Modify</div>
+        <div @click="$router.push({ name: 'edit-client', params: { client : client , id: client.id}
+        })" class="user-header-btn"><Modify/> Modify</div>
         <div @click="$emit('changeTab', 6)" :class="['user-header-btn', { 'user-header-btn-active' : tab === 6 }]"><Archive/> Archive</div>
     </div>
 </template>
@@ -23,13 +24,15 @@
 
     export default {
         components: { Back, List, History, Modify, Archive },
-        props: ['tab'],
+        props: ['tab', 'client'],
         methods: {
-            pushTab(link, index){
-                this.$emit('changeTab', index)
-                if(!this.$route.fullPath.includes(link)){
-                    this.$router.push(link)
-                }
+            pushTab(link){
+                this.$emit('changeTab', link)
+            }
+        },
+        watch: {
+            client(){
+                console.log('userHeader', this.client)
             }
         }
     }

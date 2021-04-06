@@ -14,6 +14,16 @@ export function date(data, flag){
     if (flag === 'b'){
 		tempDate = new Date(data)
         return new Date().getFullYear() - tempDate.getFullYear()
-		// return tempDate.getDate() + '' + (tempDate.getMonth() !== null && month[tempDate.getMonth()]?.name ? month[tempDate.getMonth()].name : '')+ ' ' + tempDate.getFullYear()
-    }
+    } else if (flag === 'td'){
+		tempDate = new Date(data)
+		let d = 'AM'
+		let hours;
+		if(tempDate.getHours() > 12){
+			d = 'PM'
+			hours = tempDate.getHours() - 12
+		} else {
+			hours = tempDate.getHours()
+		}
+		return (tempDate.getMonth() + 1) + '/' + tempDate.getDate() + '/' + tempDate.getFullYear() + '&nbsp;&nbsp;&nbsp;' + hours + ':' + tempDate.getMinutes() + ' ' + d
+	}
 }

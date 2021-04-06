@@ -5,9 +5,18 @@
             :circles="summary"
             :height="'179px'"
         />
-        <Details/>
-        <Resonance/>
-        <Heart :title="'Heart Rate'" :width="'328px'"/>
+        <Details
+            :test="test"
+        />
+        <Resonance
+            :test="test"
+        />
+        <Heart 
+            :title="'Heart Rate'" 
+            :width="'328px'"
+            :test="test"
+            :breat="true"
+        />
         <Four 
             :title="'Aging Summary'"
             :circles="stress"
@@ -15,7 +24,7 @@
             :width="'308px'"
             :ml="'20px'"
         />
-        <Comments :comment="test.procedureComment" v-if="test.procedureComment"/>
+        <Comments :comment="test.procedureComment" v-if="test.procedureComment"/> 
     </div>
 </template>
 
@@ -35,41 +44,150 @@
         props: ['user', 'test'],
         data(){
             return {
-                summary: [
+                summary: [],
+                stress: [],
+            }
+        },
+        components: { Measurements, Four, Adaptation, Heart, Comments, Details, Resonance },
+        mounted(){
+            this.updateData()
+        },
+        methods: {
+            updateData(){
+                this.summary = [
                     {
                         title: 'Resonance',
-                        margin: '30px'
+                        margin: '30px',
+                        color: [
+                            {
+                                color: '#FBBC05',
+                                gap: [0, 30]
+                            },
+                            {
+                                color: '#FFFF00',
+                                gap: [31, 60]
+                            },
+                            {
+                                color: '#4ACE67',
+                                gap: [61, 100]
+                            }
+                        ],
+                        value: Math.round(this.test.data.MeanScore)
                     },
                     {
                         title: 'Congruence',
-                        margin: '30px'
-                        
+                        margin: '30px',
+                        color: [
+                            {
+                                color: '#FBBC05',
+                                gap: [0, 20]
+                            },
+                            {
+                                color: '#FFFF00',
+                                gap: [21, 40]
+                            },
+                            {
+                                color: '#4ACE67',
+                                gap: [41, 100]
+                            }
+                        ],
+                        value: Math.round(this.test.data.Consistency)
                     },
                     {
                         title: 'Mean HR',
-                        margin: '30px'
+                        margin: '30px',
+                        color: [
+                            {
+                                color: '#FBBC05',
+                                gap: [30, 40]
+                            },
+                            {
+                                color: '#FFFF00',
+                                gap: [41, 50]
+                            },
+                            {
+                                color: '#4ACE67',
+                                gap: [51, 80]
+                            },
+                            {
+                                color: '#FFFF00',
+                                gap: [81, 90]
+                            },
+                            {
+                                color: '#FBBC05',
+                                gap: [91, 130]
+                            }
+                        ],
+                        value: Math.round(this.test.data.MeanHR)
                     },
                     {
                         title: 'HR Variation',
+                        color: [
+                            {
+                                color: '#FBBC05',
+                                gap: [0, 10]
+                            },
+                            {
+                                color: '#FFFF00',
+                                gap: [11, 20]
+                            },
+                            {
+                                color: '#4ACE67',
+                                gap: [21, 50]
+                            }
+                        ],
+                        value: Math.round(this.test.data.HrVariation)
                     }
-                ],
-                stress: [
+                ]
+                this.stress = [
                     {
                         title: 'Aging Speed',
-                        margin: '30px'
+                        margin: '30px',
+                        color: [
+                            {
+                                color: '#4ACE67',
+                                gap: [0, 0.9]
+                            },
+                            {
+                                color: '#FFFF00',
+                                gap: [0.9, 1.1]
+                            },
+                            {
+                                color: '#FBBC05',
+                                gap: [1.1, 2.0]
+                            }
+                        ],
+                        value: this.test.data.AgingSpeed.toFixed(1),
                     },
                     {
                         title: 'Biological Age',
-                        margin: '30px'
-                        
+                        margin: '30px',
+                        color: [
+                            {
+                                color: '#0F89DA',
+                                gap: [0, 120]
+                            }
+                        ],
+                        value: Math.round(this.test.data.BioAge)
                     },
                     {
                         title: 'Calendar Age',
-                    },
-                ],
-                comment: 'Explanations to the source code of the program located directly inside the commented code. The syntax for comments is defined by the programming language. '
+                        margin: '0px',
+                        color: [
+                            {
+                                color: '#0F89DA',
+                                gap: [0, 120]
+                            }
+                        ],
+                        value: Math.round(this.test.data.CalAge)
+                    }
+                ]
             }
         },
-        components: { Measurements, Four, Adaptation, Heart, Comments, Details, Resonance }
+        watch: {
+            test(){
+                this.updateData()
+            }
+        }
     }
 </script>

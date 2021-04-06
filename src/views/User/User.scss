@@ -13,20 +13,22 @@
             align-items: center;
             margin-top: 25px;
             margin-bottom: 20px;
+            user-select: none;
             .right{
                 transform: rotate(180deg);
-                margin-left: 70px;
-                margin-right: 0px;
             }
             svg{
                 cursor: pointer;
-                margin-right: 70px;
             }
             span{
                 color: #FFFFFF;
                 font-size: 0.8rem;
                 line-height: 0.95rem;
                 font-weight: 500;
+                width: 300px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
         }
         &-data{

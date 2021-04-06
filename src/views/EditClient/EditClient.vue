@@ -1,16 +1,16 @@
 <template>
-    <div class="add-client-wrapper">
-        <div class="add-client">
-            <h2 class="add-client-header"><Back @click="$router.back()"/> Add new client </h2>
-            <div class="add-client-body">
-                <div :class="['add-client-body-error', {'add-client-body-error-active' : error}]" v-html="errorMessage">
+    <div class="edit-client-wrapper">
+        <div class="edit-client">
+            <h2 class="edit-client-header"><Back @click="$router.push({ name: 'user', params: { user : $route.params.client , id: $route.params.client.client.id} })"/> Edit client </h2>
+            <div class="edit-client-body">
+                <div :class="['edit-client-body-error', {'edit-client-body-error-active' : error}]" v-html="errorMessage">
                 </div>
-                <div class="add-client-body-desc"><span>*</span> - mandatory data entries </div>
-                <form class="add-client-body-inputs" @submit.prevent="send">
+                <div class="edit-client-body-desc"><span>*</span> - mandatory data entries </div>
+                <form class="edit-client-body-inputs" @submit.prevent="send">
                     <div class="inputs-wrapper">
                         <Input
-                            :value="inputs.first_name"
-                            :name="'first_name'"
+                            :value="inputs.firstName"
+                            :name="'firstName'"
                             :type="'text'"
                             @inputChange="inputChange"
                             :placeholder="'First name'"
@@ -20,8 +20,8 @@
                             :required="true"
                         />
                         <Input
-                            :value="inputs.last_name"
-                            :name="'last_name'"
+                            :value="inputs.lastName"
+                            :name="'lastName'"
                             :type="'text'"
                             @inputChange="inputChange"
                             :placeholder="'Last name'"
@@ -44,7 +44,7 @@
                             :isOpenCalendar="isOpenCalendar"
                             @closeCalendar="closeCalendar"
                         />
-                        <div class="add-client-body-inputs-gender">
+                        <div class="edit-client-body-inputs-gender">
                             <div :class="['gender-item', {'gender-item-active' : inputs.gender === 'male'}]" @click="inputs = {...inputs, gender: 'male'}">
                                 <div class="circle">
                                     <span></span>
@@ -111,32 +111,10 @@
                             @blur="inputCheck"
                             :required="true"
                         />
-                        <Input
-                            :value="inputs.password"
-                            :name="'password'"
-                            :type="'password'"
-                            @inputChange="inputChange"
-                            :placeholder="'Password'"
-                            :marginBottom="37"
-                            @focus="error = false"
-                            @blur="inputCheck"
-                            :required="true"
-                        />
-                        <Input
-                            :value="inputs.repeat"
-                            :name="'repeat'"
-                            :type="'password'"
-                            @inputChange="inputChange"
-                            :placeholder="'Re-enter password'"
-                            :marginBottom="37"
-                            @focus="error = false"
-                            @blur="inputCheck"
-                            :required="true"
-                        />
                     </div>
                     <div class="nav-wrapper">
                         <Button
-                            :title="'Create'"
+                            :title="'Save'"
                             :width="154"
                             :margin="30"
                             @click="send"
@@ -146,7 +124,7 @@
                             :width="154"
                             :margin="0"
                             :mode="'cancel'"
-                            @click="$router.back()"
+                            @click="$router.push({ name: 'user', params: { user : $route.params.client , id: $route.params.client.client.id} })"
                         />
                     </div>
                 </form>
@@ -159,37 +137,26 @@
 
     import { validateEmail } from '@/utilites/functions'
 
-    import { createUser } from '@/utilites/api'
+    import { editUser } from '@/utilites/api'
 
     import Input from '@/components/Input/Input'
     import Button from '@/components/Button/Button'
 
     import Back from '@/assets/img/arrow_back.svg'
-    import './AddClient.scss'
+    import './EditClient.scss'
 
     export default {
         data() {
             return {
-                inputs: {
-                    notes: '',
-                    first_name: '',
-                    last_name: '',
-                    email : '',
-                    phone: '',
-                    address: '',
-                    username: '',
-                    password: '',
-                    repeat: '',
-                    gender: 'male',
-                },
+                inputs: {},
+                birth: '',
                 error: false,
                 errorMessage: '',
                 isOpenCalendar: false,
-                birth: ''
             }
         },
         components: { Input, Button, Back },
-        props: ['token'],
+        props: ['token', 'client'],
         methods: {
             inputChange(value){
                 if(value.name === 'birth'){
@@ -201,7 +168,7 @@
                 }
             },
             inputCheck(input){
-                if(!this.inputs.first_name.trim() || !this.inputs.last_name.trim() || !this.inputs.email.trim() || !this.inputs.username.trim() || !this.inputs.password.trim() || !this.inputs.repeat.trim() || !this.birth.toString().trim()){
+                if(!this.inputs.firstName.trim() || !this.inputs.lastName.trim() || !this.inputs.email.trim() || !this.inputs.username.trim() || !this.birth.toString().trim()){
                     this.error = true
                     this.errorMessage = 'Fill in all required fields'
                     return false
@@ -209,26 +176,18 @@
                     this.error = true
                     this.errorMessage = 'Please enter a valid email address'
                     return false
-                } else if (this.inputs.password.length < 6){
-                    this.error = true
-                    this.errorMessage = 'The password must contain at least 6 characters'
-                    return false
-                } else if (this.inputs.password !== this.inputs.repeat){
-                    this.error = true
-                    this.errorMessage = 'Passwords don\'t match'
-                    return false
-                } 
+                }
                 return true
             },
             send() {
                 if(this.inputCheck()){
-                    createUser(this.token, {...this.inputs, birth: this.birth})
+                    editUser(this.token, {...this.inputs, id: this.$route.params.client.id, birth: this.birth.toString()})
                     .then(res => {
                         if(res.errors){
                             this.errorMessage = res.errors.pop().message
                             this.error = true
                         } else {
-                            this.$router.push('/dashboard')
+                            this.$router.push({ name: 'user', params: { user : this.$route.params.client , id: this.$route.params.client.client.id} })
                         }
                     })
                 }
@@ -244,9 +203,17 @@
                 this.inputCheck()
             },
         },
+        mounted(){
+            this.inputs = {
+                ...this.$route.params.client,
+                gender: this.$route.params.client?.client?.gender?.toLowerCase(),
+                notes: this.$route.params.client?.client?.heathNotes
+            }
+            this.birth = this.$route.params.client?.client?.dateOfBirth
+        },
         watch: {
-            birth(){
-                console.log('sdf')
+            inputs(){
+                console.log(this.inputs)
             }
         }
     }

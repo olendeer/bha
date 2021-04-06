@@ -40,6 +40,7 @@
                     if(!res.data){
                         this.$emit('pushController', res.errors.pop().message)
                     } else {
+                        this.$emit('deleteTest', this.test.id)
                         this.$emit('deleteController')
                     }
                 })

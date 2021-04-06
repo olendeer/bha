@@ -24,7 +24,6 @@
             is-dark
             color="red"
             v-if="isOpenCalendar && birth"
-            :dayclick="$emit('dayclick')"
             :locale="'en'"
         ></calendar>
         <Arrow v-if="birth" class="input-arrow" />
@@ -60,7 +59,6 @@
                 this.typeInput = this.typeInput === 'password' ? 'text' : 'password'
             },
             focus(event) {
-                console.log(event)
                 event.target.removeAttribute('readonly')
                 this.$emit('focus')
                 this.active = true
@@ -70,18 +68,8 @@
                 if(!this.value.length > 0 && !this.birth){
                     this.active = false   
                 }
-                // console.log('blur')
-                if(this.birth){
-                    // console.log(this.value)
-                    // this.$emit('closeCalendar')
-                }
             }
         },
-        // mounted(){
-        //     if(this.value){
-        //         this.active = true
-        //     }
-        // },
         components: { Eye, calendar: DatePicker, Arrow },
         watch: {
             birthValue(){

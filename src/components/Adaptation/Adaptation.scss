@@ -8,6 +8,7 @@
     box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.05);
     border-radius: 5px;
     padding-top: 16px;
+    padding-bottom: 12px;
     margin-bottom: 12px;
     margin-right: 20px;
     margin-bottom: 20px;
@@ -19,30 +20,112 @@
         margin-bottom: 12px;
     }
     &-chart{
-        width: 85%;
-        height: 138px;
-        position: relative;
+        width: 100%;
         display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
         align-items: center;
-        justify-content: center;
-        &::after{
-            position: absolute;
-            content: '';
-            width: 74%;
-            margin-left: 30px;
-            margin-bottom: 17px;
-            height: 0px;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+        .chart-top{
+            display: flex;
+            &-values{
+                display: flex;
+                flex-direction: column;
+                padding-right: 7px;
+                justify-content: flex-end;
+                span{
+                    margin-bottom: 10px;
+                    font-size: 0.6rem;
+                    line-height: 0.7rem;
+                    font-weight: 500;
+                    color: #FFFFFF;
+                    width: 14px;
+                    height: 14px;
+                    &:last-child{
+                        margin-bottom: 6px;
+                    }
+                }
+            }
+            &-graph{
+                border-bottom: 1px solid rgba(#fff, .25);
+                border-left: 1px solid rgba(#fff, .25);
+                width: 133px;
+                height: 118px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding-bottom: 8px;
+                position: relative;
+                &::after{
+                    position: absolute;
+                    content: '';
+                    width: 100%;
+                    height: 0px;
+                    border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+                }
+                &::before{
+                    position: absolute;
+                    content: '';
+                    width: 90%;
+                    height: 0px;
+                    transform: rotate(90deg);
+                    border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+                }
+                .value{
+                    position: absolute;
+                    background: #0071BC;
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    transition-duration: .2s;
+                    // top: calc(50% - 4px);
+                    // left: calc(50% - 4px);
+                    z-index: 2;
+                }
+            }
         }
-        &::before{
-            position: absolute;
-            content: '';
-            width: 64%;
-            margin-left: 30px;
-            margin-bottom: 17px;
-            height: 0px;
-            transform: rotate(90deg);
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+        .chart-bottom{
+            display: flex;
+            align-items: center;
+            padding-top: 6px;
+            span{
+                font-size: 0.6rem;
+                line-height: 0.7rem;
+                font-weight: 500;
+                color: #FFFFFF;
+                margin-left: 10px;
+                height: 14px;
+                width: 14px;
+                &:first-child{
+                    margin-left: 20px;
+                }
+            }
         }
     }
+    // &-chart{
+    //     width: 100%;
+    //     height: 100%;
+    //     position: relative;
+    //     display: flex;
+    //     align-items: center;
+    //     justify-content: center;
+    //     &::after{
+    //         position: absolute;
+    //         content: '';
+    //         width: 80%;
+    //         // margin-left: 30px;
+    //         // margin-bottom: 17px;
+    //         height: 0px;
+    //         border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+    //     }
+    //     &::before{
+    //         position: absolute;
+    //         content: '';
+    //         width: 80%;
+    //         // margin-left: 30px;
+    //         // margin-bottom: 17px;
+    //         height: 0px;
+    //         transform: rotate(90deg);
+    //         border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+    //     }
+    // }
 }

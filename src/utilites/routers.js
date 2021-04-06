@@ -6,6 +6,7 @@ import Register from '@/views/Register/Register'
 import Dashboard from '@/views/Dashboard/Dashboard'
 import Reset from '@/views/Reset/Reset'
 import AddClient from '@/views/AddClient/AddClient'
+import EditClient from '@/views/EditClient/EditClient'
 
 import User from '@/views/User/User'
 import UserSingle from '@/views/User/UserSingle/UserSingle'
@@ -69,34 +70,42 @@ const router = new Router({
             }
         },
         {
+            path : '/edit-client/:id',
+            component: EditClient,
+            name: 'edit-client',
+            meta: {
+                auth: true
+            }
+        },
+        {
             path : '/user/:id',
             name: 'user',
             component: User,
         },
         {
-            path : '/user/:id/:test',
+            path : '/user/:id/',
             component: User,
             children: [
                 {
-                    path: 'single',
+                    path: 'single/',
                     components: {
                         user: UserSingle
                     }
                 },
                 {
-                    path: 'post',
+                    path: 'prepost/',
                     components: {
                         user: UserPost
                     }
                 },
                 {
-                    path: 'cardiac',
+                    path: 'cardiac/',
                     components: {
                         user: UserCardiac
                     }
                 },
                 {
-                    path: 'breatwork',
+                    path: 'breatwork/',
                     components: {
                         user: UserBreatwork
                     }
