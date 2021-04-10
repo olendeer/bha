@@ -25,5 +25,19 @@ export function date(data, flag){
 			hours = tempDate.getHours()
 		}
 		return (tempDate.getMonth() + 1) + '/' + tempDate.getDate() + '/' + tempDate.getFullYear() + '&nbsp;&nbsp;&nbsp;' + hours + ':' + tempDate.getMinutes() + ' ' + d
+	} else if (flag === 'xd') {
+		tempDate = new Date(data)
+		return (tempDate.getMonth() + 1) + '/' + tempDate.getDate() + '/' + tempDate.getFullYear()
+	} else if (flag === 'xt'){
+		tempDate = new Date(data)
+		let d = 'AM'
+		let hours;
+		if(tempDate.getHours() > 12){
+			d = 'PM'
+			hours = tempDate.getHours() - 12
+		} else {
+			hours = tempDate.getHours()
+		}
+		return  hours + ':' + tempDate.getMinutes() + ' ' + d
 	}
 }

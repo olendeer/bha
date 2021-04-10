@@ -1,5 +1,5 @@
 import XLSX from 'xlsx'
-
+import { date } from './functions'
 export function csv(JSONData, ReportTitle, ShowLabel) {
     //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
     var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
@@ -72,24 +72,217 @@ export function csv(JSONData, ReportTitle, ShowLabel) {
     document.body.removeChild(link);
 }
 
-export function xls(name, data){
-    var createXLSLFormatObj = [];
-    var xlsHeader = ["Name", "Value"];
+export function xls(name, data, mode){
 
-    createXLSLFormatObj.push(xlsHeader)
-    let body = document.createElement('tbody')
-    data.forEach(row => {
-        var innerRowData = [];
-        body.append('<tr><td>' + row.Name + '</td><td>' + row.Value + '</td></tr>');
-        for (const val in row) {
-            innerRowData.push(row[val])
+    console.log(data)
+    if(mode === 'single'){
+        let h = data.body?.data?.Height
+        let d, f = 0
+        if(h){
+            d = Math.trunc(h / 12)
+            f = h - (d * 12)
         }
-        createXLSLFormatObj.push(innerRowData);
-    })
 
-    var wb = XLSX.utils.book_new()
-    let ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
+        let clientInfo = [
+            ['Client ID:', data.user.username, ''],
+            ['Client Name:', data.user.firstName + ', ' + data.user.lastName, ''],
+            ['Gender:', data.user.client.gender, ''],
+            ['Date Of Birth:', data.user.client.dateOfBirth, ''],
+            ['Height (ft-in):', d || 0, f || 0],
+            ['Weight (lbs):', data?.compose?.data?.Weight || 0, ''],
+            ['BMI:', data?.compose?.data?.BMI || 0, ''],
+            ['Contact Phone:', data.user.phone || ''],
+            ['Contact Email:', data.user.email, ''],
+            ['Contact Address:', data.user.address || '', ''],
+            ['Health Notes:', data.user.client.heathNotes || '', ''],
+        ]
+        let results = [
+            ['Test Date:', date(data.testedDate || data.createdAt, 'xd')],
+            ['Test Time:', date(data.testedDate || data.createdAt, 'xt')],
+            ['BP SYS:', data.pressure?.data?.Sys || 0],
+            ['BP DIA:', data.pressure?.data?.Dia || 0],
+            ['Blood Glucose:', data?.glucose?.data['Blood glucose'] || 0],
+            ['Autonomic Balance:', data.data.AutonomicBalance || 0],
+            ['Resting HR:', data?.data.HeartRate || 0],
+            ['Stress Index:', data.data.SI || 0],
+            ['HRV Index:', data.data.SDNN || 0],
+            ['Vagal Index:', data.data.RMSSD || 0],
+            ['Adaptation Strain:', data.data.SL || 0],
+            ['Adaptation Resource:', data.data.FR || 0],
+            ['Adaptation Index:', data.data.HSI || 0],
+            ['SpO2:', data.data.SpO2 || 0],
+            ['Test Comments:', data.procedureComment || ''],
+            ['=====', ''],
+            // ['Adaptation Index:', data.data.HSI || 0],
+        ]
+        let rrTemp = JSON.parse(JSON.parse(data.rawData1))
+        let rr = []
+        rrTemp.forEach(item => {
+            rr.push([item])
+        })
 
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet');
-    XLSX.writeFile(wb, name + '.xls');
+        var wb = XLSX.utils.book_new()
+        let ws1 = XLSX.utils.aoa_to_sheet(clientInfo);
+        let ws2 = XLSX.utils.aoa_to_sheet(results);
+        let ws3 = XLSX.utils.aoa_to_sheet(rr);
+
+        XLSX.utils.book_append_sheet(wb, ws1, 'Client Info');
+        XLSX.utils.book_append_sheet(wb, ws2, 'Test Results');
+        XLSX.utils.book_append_sheet(wb, ws3, 'RR Data');
+        XLSX.writeFile(wb, name + '.xls');
+        return
+    } else if (mode === 'cardiac' || mode === 'breatwork'){
+        let h = data.body?.data?.Height
+        let d, f = 0
+        if(h){
+            d = Math.trunc(h / 12)
+            f = h - (d * 12)
+        }
+
+        let clientInfo = [
+            ['Client ID:', data.user.username, ''],
+            ['Client Name:', data.user.firstName + ', ' + data.user.lastName, ''],
+            ['Gender:', data.user.client.gender, ''],
+            ['Date Of Birth:', data.user.client.dateOfBirth, ''],
+            ['Height (ft-in):', d || 0, f || 0],
+            ['Weight (lbs):', data?.compose?.data?.Weight || 0, ''],
+            ['BMI:', data?.compose?.data?.BMI || 0, ''],
+            ['Contact Phone:', data.user.phone || ''],
+            ['Contact Email:', data.user.email, ''],
+            ['Contact Address:', data.user.address || '', ''],
+            ['Health Notes:', data.user.client.heathNotes || '', ''],
+        ]
+        let results = [
+            ['Session Date:', date(data.testedDate || data.createdAt, 'xd')],
+            ['Session Time:', date(data.testedDate || data.createdAt, 'xt')],
+            ['BP SYS:', data.pressure?.data?.Sys || 0],
+            ['BP DIA:', data.pressure?.data?.Dia || 0],
+            ['Blood Glucose:', data?.glucose?.data['Blood glucose'] || 0],
+            ['Resonance:', data.data.MeanScore || 0],
+            ['Congruence:', data?.data.Consistency || 0],
+            ['Resting HR:', data.data.HeartRate || 0],
+            ['HR Variation:', data.data.HrVariation || 0],
+            ['Good Resonance:', data.resonance.good || 0],
+            ['Fait Resonance:', data.resonance.fair || 0],
+            ['Poor Resonance:', data.resonance.poor || 0],
+            ['Highest Resonance:', data.data.HighestScore || 0],
+            ['Lowest Resonance:', data.data.LowestScore || 0],
+            ['Breath Rate:', data.data.Rate || 0],
+            ['Aging Speed:', data.data.AgingSpeed || 0],
+            ['Biological Age:', data.data.BioAge || 0],
+            ['Calendar Age:', data.data.CalAge || 0],
+            ['Session Comments:', data.procedureComment || ''],
+        ]
+        let rrTemp = JSON.parse(JSON.parse(data.rawData1))
+        let rr = []
+        rrTemp.forEach(item => {
+            rr.push([item])
+        })
+        let rrTemp2 = JSON.parse(JSON.parse(data.rawData2))
+        let rr2 = []
+        rrTemp2.forEach(item => {
+            rr2.push([item])
+        })
+
+        var wb = XLSX.utils.book_new()
+        let ws1 = XLSX.utils.aoa_to_sheet(clientInfo);
+        let ws2 = XLSX.utils.aoa_to_sheet(results);
+        let ws3 = XLSX.utils.aoa_to_sheet(rr);
+        let ws4 = XLSX.utils.aoa_to_sheet(rr2);
+
+        XLSX.utils.book_append_sheet(wb, ws1, 'Client Info');
+        XLSX.utils.book_append_sheet(wb, ws2, 'Session Results');
+        XLSX.utils.book_append_sheet(wb, ws3, 'RR Data');
+        XLSX.utils.book_append_sheet(wb, ws4, 'Resonance');
+        XLSX.writeFile(wb, name + '.xls');
+        return
+    } else if (mode === 'prepost'){
+        let h = data.pre.body?.data?.Height
+        let d, f = 0
+        if(h){
+            d = Math.trunc(h / 12)
+            f = h - (d * 12)
+        }
+
+        let clientInfo = [
+            ['Client ID:', data.pre.user.username, ''],
+            ['Client Name:', data.pre.user.firstName + ', ' + data.pre.user.lastName, ''],
+            ['Gender:', data.pre.user.client.gender, ''],
+            ['Date Of Birth:', data.pre.user.client.dateOfBirth, ''],
+            ['Height (ft-in):', d || 0, f || 0],
+            ['Weight (lbs):', data?.pre.compose?.data?.Weight || 0, ''],
+            ['BMI:', data?.pre.compose?.data?.BMI || 0, ''],
+            ['Contact Phone:', data.pre.user.phone || ''],
+            ['Contact Email:', data.pre.user.email, ''],
+            ['Contact Address:', data.pre.user.address || '', ''],
+            ['Health Notes:', data.pre.user.client.heathNotes || '', ''],
+        ]
+        let results = [
+            ['Test Date:', date(data.pre.testedDate || data.pre.createdAt, 'xd'), date(data.post.testedDate || data.post.createdAt, 'xd')],
+            ['Test Time:', date(data.pre.testedDate || data.pre.createdAt, 'xt'), date(data.post.testedDate || data.post.createdAt, 'xt')],
+            ['BP SYS:', data.pre.pressure?.data?.Sys || 0, data.post.pressure?.data?.Sys || 0],
+            ['BP DIA:', data.pre.pressure?.data?.Dia || 0, data.post.pressure?.data?.Dia || 0],
+            ['Blood Glucose:', data?.pre.glucose?.data['Blood glucose'] || 0, data?.post.glucose?.data['Blood glucose'] || 0],
+            ['Autonomic Balance:', data.pre.data.AutonomicBalance || 0, data.post.data.AutonomicBalance || 0],
+            ['Resting HR:', data?.pre.data.HeartRate || 0, data?.post.data.HeartRate || 0],
+            ['Stress Index:', data.pre.data.SI || 0, data.post.data.SI || 0],
+            ['HRV Index:', data.pre.data.SDNN || 0, data.post.data.SDNN || 0],
+            ['Vagal Index:', data.pre.data.RMSSD || 0, data.post.data.RMSSD || 0],
+            ['Adaptation Strain:', data.pre.data.SL || 0, data.post.data.SL || 0],
+            ['Adaptation Resource:', data.pre.data.FR || 0, data.post.data.FR || 0],
+            ['Adaptation Index:', data.pre.data.HSI || 0, data.post.data.HSI || 0],
+            ['SpO2:', data.pre.data.SpO2 || 0, data.post.data.SpO2 || 0],
+            ['Test Comments:', data.pre.procedureComment || '', data.post.procedureComment || ''],
+            ['=====', ''],
+            // ['Adaptation Index:', data.data.HSI || 0],
+        ]
+        let rrTemp = JSON.parse(JSON.parse(data.pre.rawData1))
+        let rrTemp2 = JSON.parse(JSON.parse(data.post.rawData1))
+        let rr = []
+        rrTemp.forEach((item, index) => {
+            rr.push([item, rrTemp2[index]])
+        })
+
+        var wb = XLSX.utils.book_new()
+        let ws1 = XLSX.utils.aoa_to_sheet(clientInfo);
+        let ws2 = XLSX.utils.aoa_to_sheet(results);
+        let ws3 = XLSX.utils.aoa_to_sheet(rr);
+
+        XLSX.utils.book_append_sheet(wb, ws1, 'Client Info');
+        XLSX.utils.book_append_sheet(wb, ws2, 'Test Results');
+        XLSX.utils.book_append_sheet(wb, ws3, 'RR Data');
+        XLSX.writeFile(wb, name + '.xls');
+        return
+    }
+
+
+
+
+
+
+
+
+
+
+
+    // var createXLSLFormatObj = [];
+    // var xlsHeader = ["Name", "Value"];
+
+    // createXLSLFormatObj.push(xlsHeader)
+    // let body = document.createElement('tbody')
+    // data.forEach(row => {
+    //     var innerRowData = [];
+    //     // body.append('<tr><td>' + row.Name + '</td><td>' + row.Value + '</td></tr>');
+    //     for (const val in row) {
+    //         innerRowData.push(row[val].toString())
+    //     }
+    //     createXLSLFormatObj.push(innerRowData);
+    // })
+
+    // console.log(createXLSLFormatObj)
+    // var wb = XLSX.utils.book_new()
+    // let ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
+
+    // XLSX.utils.book_append_sheet(wb, ws, 'Sheet');
+    // XLSX.writeFile(wb, name + '.xls');
 }

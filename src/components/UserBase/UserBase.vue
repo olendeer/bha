@@ -63,7 +63,7 @@
     import './UserBase.scss'
 
     export default {
-        props: ['user', 'test', 'diff'],
+        props: ['user', 'test', 'diff', 'tab'],
         components: { Diff, Eye, Download, Print, Export, Comment, Female, Male, Archive },
         data(){
             return {
@@ -99,23 +99,20 @@
                 
             },
             excelHandler(){
-                let temp = this.test.data
-                let excelData = []
-                for(let key in temp){
-                    excelData.push({ Name: key, Value: temp[key] })
-                }
-                
                 let name;
                 if(this.$route.path.includes('single')){
                     name = 'Health_Single_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
+                    xls(name, this.test, 'single')
                 } else if (this.$route.path.includes('post')){
                     name = 'Health_Pre_Post_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
+                    xls(name, this.test, 'prepost')
                 } else if (this.$route.path.includes('cardiac')){
                     name = 'Cardiac_Resonance_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
+                    xls(name, this.test, 'cardiac')
                 } else if (this.$route.path.includes('breatwork')){
                     name = 'Breathwork_' + (new Date().getMonth() + 1) + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()
+                    xls(name, this.test, 'breatwork')
                 }
-                xls(name, excelData)
             }
         },
         computed: {

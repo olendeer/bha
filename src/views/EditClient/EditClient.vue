@@ -187,7 +187,16 @@
                             this.errorMessage = res.errors.pop().message
                             this.error = true
                         } else {
-                            this.$router.push({ name: 'user', params: { user : this.$route.params.client , id: this.$route.params.client.client.id} })
+                            this.$router.push({ name: 'user', params: { user : {
+                                ...this.$route.params.client,
+                                ...this.inputs,
+                                client: {
+                                    ...this.$route.params.client.client,
+                                    gender: this.inputs.gender === 'male' ? 'Male' : 'Female',
+                                    heathNotes: this.inputs.notes,
+                                    dateOfBirth: this.birth
+                                }
+                            } , id: this.$route.params.client.client.id} })
                         }
                     })
                 }
@@ -206,7 +215,7 @@
         mounted(){
             this.inputs = {
                 ...this.$route.params.client,
-                gender: this.$route.params.client?.client?.gender?.toLowerCase(),
+                gender: this.$route.params.client?.client?.gender.toLowerCase(),
                 notes: this.$route.params.client?.client?.heathNotes
             }
             this.birth = this.$route.params.client?.client?.dateOfBirth

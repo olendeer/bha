@@ -16,6 +16,7 @@
                 :diff="diff"
                 @changeDiff="changeDiff"
                 @changeShow="changeShow"
+                :tab="tab"
             />
             <Comment
                 :open="isOpenComments"
@@ -175,7 +176,11 @@
                             fair,
                             good
                         },
-                        type: 'cardiac'
+                        type: 'cardiac',
+                        body: bodys.reverse().find(i => i.createdAt < item.createdAt) || bodys.find(i => i.createdAt > item.createdAt),
+                        compose: compose.reverse().find(i => i.createdAt < item.createdAt) || compose.find(i => i.createdAt > item.createdAt),
+                        glucose: glucose.reverse().find(i => i.createdAt < item.createdAt) || glucose.find(i => i.createdAt > item.createdAt),
+                        pressure: pressure.reverse().find(i => i.createdAt < item.createdAt) || pressure.find(i => i.createdAt > item.createdAt),
                     }
                 })
                 let breatwork = tests.filter(item => item.procedure.name === 'Breathwork' && item.data.Category === 3).map((item, index) => {
@@ -195,6 +200,10 @@
                             fair,
                             good
                         },
+                        body: bodys.reverse().find(i => i.createdAt < item.createdAt) || bodys.find(i => i.createdAt > item.createdAt),
+                        compose: compose.reverse().find(i => i.createdAt < item.createdAt) || compose.find(i => i.createdAt > item.createdAt),
+                        glucose: glucose.reverse().find(i => i.createdAt < item.createdAt) || glucose.find(i => i.createdAt > item.createdAt),
+                        pressure: pressure.reverse().find(i => i.createdAt < item.createdAt) || pressure.find(i => i.createdAt > item.createdAt),
                         type: 'breatwork'
                     }
                 })
